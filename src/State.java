@@ -4,11 +4,11 @@
  * @author Stefano.
  *         Created 02 nov 2016.
  */
-public class Stato {
+public class State {
 
 	private String state;
 
-	public Stato() {
+	public State() {
 		state = "";
 	}
 	

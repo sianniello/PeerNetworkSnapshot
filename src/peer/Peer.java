@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package peer;
 
 import java.io.IOException;
+import java.io.StreamTokenizer;
 import java.net.ServerSocket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -15,7 +11,8 @@ import java.util.logging.Logger;
 public class Peer {
     
     private int port;
-    private ServerSocket server;
+    private Stat
+    
     public Peer(int port) throws IOException {
         this.port = port;
         
