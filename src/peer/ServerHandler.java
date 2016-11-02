@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,8 +23,17 @@ class ServerHandler implements Runnable {
     private Socket client;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    public ServerHandler(Socket client) throws IOException {
+    private State state;
+    private int port;
+    private HashSet<Integer> link;
+    private TreeMap<Marker, Integer> markerMap;
+    
+    public ServerHandler(Socket client, int port, HashSet<Integer> link, TreeMap<Marker, Integer> markerMap) throws IOException {
         this.client = client;
+        this.port = port;
+        this.link = link;
+        this.markerMap = markerMap;
+        
         out = new ObjectOutputStream(client.getOutputStream());
         in = new ObjectInputStream(client.getInputStream());
         

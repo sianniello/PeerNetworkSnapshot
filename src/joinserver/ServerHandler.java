@@ -31,17 +31,16 @@ class ServerHandler implements Runnable {
         this.map = map;
         out = new ObjectOutputStream(client.getOutputStream());
         in = new ObjectInputStream(client.getInputStream());
-        
     }
 
     @Override
     public void run() {
     
          try {
-             InetSocketAddress address = (InetSocketAddress) in.readObject();
+             InetSocketAddress address = (InetSocketAddress) in.readObject();	//il joinserver riceve dal client il suo indirizzo
              System.out.println("Server " + Thread.currentThread().getName() + " ricevuto: " + address.toString()); 
              
-             out.writeObject(map.get(address.getPort()));
+             out.writeObject(map.get(address.getPort()));	//il joinserver invia al client l'hashset dei suoi vicini
              System.out.println("Il Server risponde: " + map.get(address.getPort()).toString()); 
              
          } catch (IOException | ClassNotFoundException ex) {
