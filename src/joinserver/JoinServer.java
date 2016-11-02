@@ -6,15 +6,10 @@
 package joinserver;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.concurrent.Executor;
@@ -22,16 +17,11 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author daniele
- */
 public class JoinServer {
 
 	private int port;
 	private ServerSocket server;
 	private TreeMap<Integer, HashSet<Integer>> map;
-	private FileReader fr;
 
 	public JoinServer(int port) throws IOException {
 		this.port = port;
@@ -43,6 +33,7 @@ public class JoinServer {
 	}
 
 	public void loadMap() throws IOException {
+		FileReader fr = new FileReader("map.txt");
 		String[] str;
 		HashSet<Integer> hs = new HashSet<>();
 		fr = new FileReader("map.txt");

@@ -41,10 +41,10 @@ class ServerHandler implements Runnable {
              InetSocketAddress address = (InetSocketAddress) in.readObject();
              System.out.println("Server " + Thread.currentThread().getName() + " ricevuto: " + address.toString()); 
              
+             out.writeObject(map.get(address.getPort()));
+             System.out.println("Il Server risponde: " + map.get(address.getPort()).toString()); 
              
-         } catch (IOException ex) {
-             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
-         } catch (ClassNotFoundException ex) {
+         } catch (IOException | ClassNotFoundException ex) {
              Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
          }
     }

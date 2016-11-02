@@ -18,5 +18,25 @@ public class Message {
 	public String getBody() {
 		return body;
 	}
+	
+	public int getWho() {
+		return who;
+	}
+	
+	public void setMarker(Marker marker) {
+		this.marker = marker;
+	}
+	
+	public void setBody() {
+		this.body = body;
+	}
+	
+	public void setWho() {
+		this.who = who;
+	}
 
+	public String toString() {
+		return "Marker: " + marker + "\nBody: " + body + "\nWho: " + who;
+	}
+	
 }

@@ -12,10 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author daniele
- */
 public class Peer {
     
     private int port;
