@@ -1,6 +1,8 @@
 package peer;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable{
 
 	private Marker marker;
 	private String body;

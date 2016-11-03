@@ -31,30 +31,32 @@ class ClientHandler implements Runnable {
 	}
 
 	//	@Override
-		public void run() {
-			
-			if(port == 10001 && LocalDateTime.now().getMinute() % 5 == 0) {
-				startSnapshot();
+	public void run() {
+
+		if(port == 10001 && LocalDateTime.now().getMinute() % 5 == 0) {
+			startSnapshot();
+		}
+
+		for(;;){
+			try {
+
+				Socket client = new Socket("localhost", peerPort);
+				ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
+				ObjectInputStream in = new ObjectInputStream(client.getInputStream());
+
+				out.writeObject(message);
+				System.out.println("Peer " + peerPort + " ha risposto: " + (String) in.readObject());
+
+			} catch (IOException | ClassNotFoundException ex) {
+				Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
 			}
-	//
-	//		for(;;){
-	//			try {
-	//
-	//				Socket client = new Socket("localhost", peerPort);
-	//				ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
-	//				ObjectInputStream in = new ObjectInputStream(client.getInputStream());
-	//
-	//				out.writeObject(message);
-	//				System.out.println("Peer " + peerPort + " ha risposto: " + (String) in.readObject());
-	//
-	//			} catch (IOException | ClassNotFoundException ex) {
-	//				Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-	//			}
-	//		}
 		}
-		
-		public void startSnapshot() {
-			//TODO
+	}
+
+	public void startSnapshot() {
+		if(markerId == 0) {
+			//TODO aggiorno stato
 		}
+	}
 
 }
