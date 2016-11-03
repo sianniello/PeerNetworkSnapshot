@@ -40,7 +40,7 @@ class ClientHandler implements Runnable {
 		for(;;){
 			try {
 
-				Socket client = new Socket("localhost", peerPort);
+				Socket client = new Socket("localhost", link.);
 				ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 				ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 

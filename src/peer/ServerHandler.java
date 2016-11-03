@@ -34,7 +34,7 @@ class ServerHandler implements Runnable {
 	public void run() {
 
 		try {
-			String message = (String) in.readObject();
+			Message message = (Message) in.readObject();
 			System.out.println("Lato Server Peer " +  ": ho ricevuto" + message);
 			out.writeObject(message);
 
