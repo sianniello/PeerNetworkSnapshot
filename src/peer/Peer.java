@@ -22,9 +22,11 @@ public class Peer {
 	private TreeMap<Marker, Integer> markerMap;
 
 	@SuppressWarnings({ "javadoc", "unqualified-field-access", "resource" })
-	public Peer(int port) throws IOException {
+	public Peer(int port) throws IOException, ClassNotFoundException {
 		this.port = port;
 
+		join();
+		
 		ServerSocket server = new ServerSocket(port);
 
 		(new Thread(new ClientHandler(port, link, state))).start();
@@ -32,7 +34,7 @@ public class Peer {
 		Executor executor = Executors.newFixedThreadPool(1500);
 
 		while(true){
-			executor.execute(new ServerHandler(server.accept()));
+			executor.execute(new ServerHandler(server.accept(), port, link, markerMap));
 		}
 
 	}
@@ -49,6 +51,7 @@ public class Peer {
 
 		out.writeObject(new InetSocketAddress(port));	//il client invia al joinserver il proprio indirizzo
 		link = (HashSet<Integer>) in.readObject();	//il client riceve dal joinserver l'hashset dei suoi vicini
+		System.out.print("Sono il client " + port + " i miei vicini sono: " + link.toString());
 	}
 
 	public static void main(String[] args) {
@@ -60,7 +63,6 @@ public class Peer {
 
 		try {
 			Peer peer = new Peer(Integer.parseInt(args[0]));
-			peer.join();
 		} catch (IOException | ClassNotFoundException ex) {
 			Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
 		}
