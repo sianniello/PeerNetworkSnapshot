@@ -5,8 +5,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.security.Timestamp;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +32,10 @@ class ClientHandler implements Runnable {
 
 	//	@Override
 		public void run() {
+			
+			if(port == 10001 && LocalDateTime.now().getMinute() % 5 == 0) {
+				startSnapshot();
+			}
 	//
 	//		for(;;){
 	//			try {
@@ -40,6 +51,10 @@ class ClientHandler implements Runnable {
 	//				Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
 	//			}
 	//		}
+		}
+		
+		public void startSnapshot() {
+			//TODO
 		}
 
 }
