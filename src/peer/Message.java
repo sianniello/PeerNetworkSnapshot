@@ -1,6 +1,11 @@
 package peer;
 
 import java.io.Serializable;
+import java.security.Timestamp;
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Timer;
 
 public class Message implements Serializable{
 
@@ -39,7 +44,7 @@ public class Message implements Serializable{
 	}
 
 	public String toString() {
-		return "Marker: " + marker + "\nBody: " + body + "\nWho: " + who;
+		return "Marker: " + marker.toString() + "\nBody: " + body + "\nWho: " + who + "\n";
 	}
 	
 }

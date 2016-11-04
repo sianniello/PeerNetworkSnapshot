@@ -3,7 +3,6 @@ package peer;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.StreamTokenizer;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,7 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Peer {
+public class Peer implements Runnable{
 
 	private int port;
 	private State state;
@@ -25,21 +24,9 @@ public class Peer {
 	public Peer(int port) throws IOException, ClassNotFoundException {
 		this.port = port;
 		state = new State();
-		join();
-		
-		ServerSocket server = new ServerSocket(port);
-
-		(new Thread(new ClientHandler(port, link, state))).start();
-
-		Executor executor = Executors.newFixedThreadPool(1500);
-
-		while(true){
-			executor.execute(new ServerHandler(server.accept(), port, link, markerMap, state));
-		}
-
 	}
 
-	@SuppressWarnings({ "javadoc", "resource" })
+	@SuppressWarnings({ "javadoc", "resource", "unchecked" })
 	public void join() throws IOException, ClassNotFoundException{
 		Socket client = null;
 		ObjectOutputStream out = null;
@@ -51,13 +38,13 @@ public class Peer {
 
 		out.writeObject(new InetSocketAddress(port));	//il client invia al joinserver il proprio indirizzo
 		link = (HashSet<Integer>) in.readObject();	//il client riceve dal joinserver l'hashset dei suoi vicini
-		System.out.print("Sono il client " + port + " i miei vicini sono: " + link.toString());
+		System.out.print("Sono il client " + port + " i miei vicini sono: " + link.toString() + "\n");
 	}
 
 	public static void main(String[] args) {
 
 		if(args.length<1){
-			System.err.println("BAD USAGE: inseri porta");
+			System.err.println("BAD USAGE: inserisci porta");
 			System.exit(0);
 		}
 
@@ -69,6 +56,23 @@ public class Peer {
 
 	}
 
+	@Override
+	public void run() {
+		try {
+			join();
 
+			ServerSocket server;
+			server = new ServerSocket(port);
+
+			(new Thread(new ClientHandler(port, link, state))).start();
+
+			Executor executor = Executors.newFixedThreadPool(1500);
+
+			while(true)
+				executor.execute(new ServerHandler(server.accept(), port, link, markerMap, state));
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

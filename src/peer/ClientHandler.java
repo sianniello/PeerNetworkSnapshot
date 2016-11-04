@@ -25,18 +25,20 @@ class ClientHandler implements Runnable {
 	public void run() {
 
 		Random random = new Random();
-		
-		if(port == 10001 && LocalDateTime.now().getMinute() % 5 == 0)
+
+		if(port == 10001 && LocalDateTime.now().getMinute() % 5 == 0) {
 			startSnapshot();
+			System.out.println("Il peer " + port + "inizia lo snapshot!");
+		}
 
 		for(;;)
 			try {
 				new Forwarder(link).sendAll(new Message(new Marker(port, 0), "Ciao", port));
-				
+
 				//il client invia messaggi in tempi random tra 5 e 60 secondi
 				Thread.sleep(random.nextInt(60000 - 5000) + 5000);
-				
-			} catch (IOException | InterruptedException exception) {
+
+			} catch (InterruptedException | IOException exception) {
 				exception.printStackTrace();
 			}
 	}

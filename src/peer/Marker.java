@@ -1,6 +1,8 @@
 package peer;
 
-public class Marker {
+import java.io.Serializable;
+
+public class Marker implements Serializable{
 
 	int processID;
 	int markerID;
