@@ -24,7 +24,7 @@ public class Peer {
 	@SuppressWarnings({ "javadoc", "unqualified-field-access", "resource" })
 	public Peer(int port) throws IOException, ClassNotFoundException {
 		this.port = port;
-
+		state = new State();
 		join();
 		
 		ServerSocket server = new ServerSocket(port);
@@ -34,7 +34,7 @@ public class Peer {
 		Executor executor = Executors.newFixedThreadPool(1500);
 
 		while(true){
-			executor.execute(new ServerHandler(server.accept(), port, link, markerMap));
+			executor.execute(new ServerHandler(server.accept(), port, link, markerMap, state));
 		}
 
 	}

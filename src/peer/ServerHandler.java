@@ -19,11 +19,13 @@ class ServerHandler implements Runnable {
 	private HashSet<Integer> link;
 	private TreeMap<Marker, Integer> markerMap;
 
-	public ServerHandler(Socket client, int port, HashSet<Integer> link, TreeMap<Marker, Integer> markerMap) throws IOException {
+	@SuppressWarnings("javadoc")
+	public ServerHandler(Socket client, int port, HashSet<Integer> link, TreeMap<Marker, Integer> markerMap, State state) throws IOException {
 		this.client = client;
 		this.port = port;
 		this.link = link;
 		this.markerMap = markerMap;
+		this.state = state;
 
 		out = new ObjectOutputStream(client.getOutputStream());
 		in = new ObjectInputStream(client.getInputStream());
@@ -34,9 +36,20 @@ class ServerHandler implements Runnable {
 	public void run() {
 
 		try {
-			Message message = (Message) in.readObject();
+			Message message = (Message) in.readObject();	//il peer riceve il messaggio
 			System.out.println("Lato Server Peer " +  ": ho ricevuto" + message);
-			out.writeObject(message);
+
+			if(message.getMarker().getMarkerID() == 0)
+				state.setState(message.getBody());	//accodo il body del messaggio allo stato (aggiorno stato)
+
+			if(message.getMarker().getMarkerID() == 1)
+				if(markerMap.containsKey(message.getMarker())) 
+					if(message.getMarker().getProcessID() == port) {
+						//TODO
+					}
+					else {
+						//TODO
+					}
 
 		} catch (IOException | ClassNotFoundException ex) {
 			Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);

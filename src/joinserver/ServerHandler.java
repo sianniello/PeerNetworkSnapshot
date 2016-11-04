@@ -20,32 +20,32 @@ import java.util.logging.Logger;
  * @author daniele
  */
 class ServerHandler implements Runnable {
-     private Socket client;
-     private ObjectOutputStream out;
-     private ObjectInputStream in;
+	private Socket client;
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
 	private TreeMap<Integer, HashSet<Integer>> map;
-     
-     
-    public ServerHandler(Socket client, TreeMap<Integer, HashSet<Integer>> map) throws IOException {
-        this.client = client;
-        this.map = map;
-        out = new ObjectOutputStream(client.getOutputStream());
-        in = new ObjectInputStream(client.getInputStream());
-    }
 
-    @Override
-    public void run() {
-    
-         try {
-             InetSocketAddress address = (InetSocketAddress) in.readObject();	//il joinserver riceve dal client il suo indirizzo
-             System.out.println("Server " + Thread.currentThread().getName() + " ricevuto: " + address.toString()); 
-             
-             out.writeObject(map.get(address.getPort()));	//il joinserver invia al client l'hashset dei suoi vicini
-             System.out.println("Il Server risponde: " + map.get(address.getPort()).toString()); 
-             
-         } catch (IOException | ClassNotFoundException ex) {
-             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
-         }
-    }
-    
+
+	public ServerHandler(Socket client, TreeMap<Integer, HashSet<Integer>> map) throws IOException {
+		this.client = client;
+		this.map = map;
+		out = new ObjectOutputStream(client.getOutputStream());
+		in = new ObjectInputStream(client.getInputStream());
+	}
+
+	@Override
+	public void run() {
+
+		try {
+			InetSocketAddress address = (InetSocketAddress) in.readObject();	//il joinserver riceve dal client il suo indirizzo
+			System.out.println("Server " + Thread.currentThread().getName() + " ricevuto: " + address.toString()); 
+
+			out.writeObject(map.get(address.getPort()));	//il joinserver invia al client l'hashset dei suoi vicini
+			System.out.println("Il Server risponde: " + map.get(address.getPort()).toString()); 
+
+		} catch (IOException | ClassNotFoundException ex) {
+			Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+
 }

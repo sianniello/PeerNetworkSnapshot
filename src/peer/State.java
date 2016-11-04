@@ -16,8 +16,13 @@ public class State {
 		return state;
 	}
 	
+	/**
+	 * Accoda al campo state della classe la stringa state passata come parametro.
+	 *
+	 * @param state
+	 */
 	public void setState(String state) {
-		this.state = state;
+		this.state = this.state + state;
 	}
 	;
 	public String toString() {
