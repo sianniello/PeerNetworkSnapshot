@@ -26,9 +26,9 @@ class ClientHandler implements Runnable {
 
 		Random random = new Random();
 
-		if(port == 10001 && LocalDateTime.now().getMinute() % 5 == 0) {
+		if(port == 10001 && LocalDateTime.now().getMinute() % 2 == 0) {
 			startSnapshot();
-			System.out.println("Il peer " + port + "inizia lo snapshot!");
+			
 		}
 
 		for(;;)
@@ -44,7 +44,17 @@ class ClientHandler implements Runnable {
 	}
 
 	public void startSnapshot() {
-		//TODO aggiorno stato
+		//TODO aggiorno lo stato
+		System.out.println("Il peer " + port + "inizia lo snapshot!");
+		state.setState(state.getState());
+		
+		try {
+			
+			forwarder.sendAll(new Message(new Marker(port, 1), "SNAPSHOT!", port));		//il peer invia in broadcast il marker
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

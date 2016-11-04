@@ -37,12 +37,19 @@ class ServerHandler implements Runnable {
 
 		try {
 			Message message = (Message) in.readObject();	//il peer riceve il messaggio
-			System.out.println("Lato Server Peer " + port + ", ho ricevuto: " + message);
 
 			if(message.getMarker().getMarkerID() == 0)
-				state.setState(message.getBody());	//accodo il body del messaggio allo stato (aggiorno stato)
+				System.out.println("Lato Server Peer " + port + ", riceve: " + message);
 
-			if(message.getMarker().getMarkerID() == 1)
+			if(message.getMarker().getMarkerID() == 1) {
+				System.out.println("Lato Server Peer " + port + ", riceve un marker");
+				
+				if(state.getState().equals("")) {	//se il peer non ha ancora registrato il proprio stato
+					state.setState(message.getBody());
+					markerMap.put(message.getMarker(), message.getWho());
+					new Forwarder(link).sendAll(message);
+				}
+				
 				if(markerMap.containsKey(message.getMarker())) 
 					if(message.getMarker().getProcessID() == port) {
 						new Forwarder(link).sendAll(message, message.getWho());
@@ -50,7 +57,7 @@ class ServerHandler implements Runnable {
 					else {
 						markerMap.put(message.getMarker(), port);	//aggiungo il marker alla treemap e aggiorno il campo who
 					}
-
+			}
 		} catch (IOException | ClassNotFoundException ex) {
 			Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
 		}
