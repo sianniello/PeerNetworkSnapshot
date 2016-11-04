@@ -2,7 +2,6 @@ package peer;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.TreeMap;
@@ -12,7 +11,6 @@ import java.util.logging.Logger;
 class ServerHandler implements Runnable {
 
 	private Socket client;
-	private ObjectOutputStream out;
 	private ObjectInputStream in;
 	private State state;
 	private int port;
@@ -27,7 +25,6 @@ class ServerHandler implements Runnable {
 		this.markerMap = markerMap;
 		this.state = state;
 
-		out = new ObjectOutputStream(client.getOutputStream());
 		in = new ObjectInputStream(client.getInputStream());
 
 	}
@@ -44,10 +41,12 @@ class ServerHandler implements Runnable {
 			if(message.getMarker().getMarkerID() == 1) {
 				System.out.println("Lato Server Peer " + port + ", riceve un marker");
 				
-				if(state.getState().equals("")) {	//se il peer non ha ancora registrato il proprio stato
-					state.setState(message.getBody());
+				if(state.getState().equals("")) {			//se il peer non ha ancora registrato il proprio stato
+					state.setState(message.getBody());		//registra il suo stato
 					markerMap.put(message.getMarker(), message.getWho());
-					new Forwarder(link).sendAll(message);
+					int sender = message.getWho();
+					message.setWho(port);
+					new Forwarder(link).sendAll(message, sender);
 				}
 				
 				if(markerMap.containsKey(message.getMarker())) 

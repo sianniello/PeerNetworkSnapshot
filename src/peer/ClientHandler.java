@@ -47,7 +47,6 @@ class ClientHandler implements Runnable {
 		//TODO aggiorno lo stato
 		System.out.println("Il peer " + port + "inizia lo snapshot!");
 		state.setState(state.getState());
-		
 		try {
 			
 			forwarder.sendAll(new Message(new Marker(port, 1), "SNAPSHOT!", port));		//il peer invia in broadcast il marker

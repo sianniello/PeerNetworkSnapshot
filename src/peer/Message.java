@@ -35,11 +35,11 @@ public class Message implements Serializable{
 		this.marker = marker;
 	}
 	
-	public void setBody() {
+	public void setBody(String body) {
 		this.body = body;
 	}
 	
-	public void setWho() {
+	public void setWho(int who) {
 		this.who = who;
 	}
 

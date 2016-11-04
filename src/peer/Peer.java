@@ -13,6 +13,12 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * TODO Put here a description of what this class does.
+ *
+ * @author Stefano.
+ *         Created 05 nov 2016.
+ */
 public class Peer implements Runnable{
 
 	private int port;
@@ -24,6 +30,7 @@ public class Peer implements Runnable{
 	public Peer(int port) throws IOException, ClassNotFoundException {
 		this.port = port;
 		state = new State();
+		markerMap = new TreeMap<Marker, Integer>();
 	}
 
 	@SuppressWarnings({ "javadoc", "resource", "unchecked" })
