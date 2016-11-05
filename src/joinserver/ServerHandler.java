@@ -15,10 +15,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author daniele
- */
 class ServerHandler implements Runnable {
 	private Socket client;
 	private ObjectOutputStream out;

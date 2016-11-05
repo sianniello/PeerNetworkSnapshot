@@ -25,12 +25,14 @@ public class Peer implements Runnable{
 	private State state;
 	private HashSet<Integer> link;
 	private TreeMap<Marker, Integer> markerMap;
+	private boolean initiator;
 
 	@SuppressWarnings({ "javadoc", "unqualified-field-access", "resource" })
-	public Peer(int port) throws IOException, ClassNotFoundException {
+	public Peer(int port, boolean initiator) throws IOException, ClassNotFoundException {
 		this.port = port;
 		state = new State();
 		markerMap = new TreeMap<Marker, Integer>();
+		this.initiator = initiator;
 	}
 
 	@SuppressWarnings({ "javadoc", "resource", "unchecked" })
@@ -56,13 +58,14 @@ public class Peer implements Runnable{
 		}
 
 		try {
-			Peer peer = new Peer(Integer.parseInt(args[0]));
+			Peer peer = new Peer(Integer.parseInt(args[0]), Boolean.parseBoolean(args[1]));
 		} catch (IOException | ClassNotFoundException ex) {
 			Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void run() {
 		try {
@@ -71,9 +74,9 @@ public class Peer implements Runnable{
 			ServerSocket server;
 			server = new ServerSocket(port);
 
-			(new Thread(new ClientHandler(port, link, state))).start();
+			(new Thread(new ClientHandler(port, link, state, initiator))).start();
 
-			Executor executor = Executors.newFixedThreadPool(1500);
+			Executor executor = Executors.newFixedThreadPool(10);
 
 			while(true)
 				executor.execute(new ServerHandler(server.accept(), port, link, markerMap, state));

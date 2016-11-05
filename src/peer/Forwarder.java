@@ -14,7 +14,11 @@ public class Forwarder {
 	private HashSet<Integer> link;
 	private ObjectOutputStream out;
 
-	@SuppressWarnings({ "javadoc", "null" })
+	@SuppressWarnings("javadoc")
+	public Forwarder() {
+	}
+	
+	@SuppressWarnings({ "javadoc" })
 	public Forwarder(HashSet<Integer> link) {
 		this.link = link;
 	}

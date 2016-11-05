@@ -27,7 +27,7 @@ public class JoinServer {
 		System.out.println("Map: " + map.toString());
 	}
 
-	@SuppressWarnings({ "unchecked", "unqualified-field-access", "resource" })
+	@SuppressWarnings({ "unchecked", "unqualified-field-access", "resource", "javadoc" })
 	public void loadMap() throws IOException {
 		FileReader fr = new FileReader("map.txt");
 		BufferedReader br = new BufferedReader(fr);

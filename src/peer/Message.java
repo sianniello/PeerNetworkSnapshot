@@ -13,6 +13,13 @@ public class Message implements Serializable{
 	private String body;
 	private int who;
 	
+	/**
+	 * TODO Put here a description of what this constructor does.
+	 *
+	 * @param marker
+	 * @param body	
+	 * @param who	mittente del messaggio aggiornato a ogni inoltro/invio
+	 */
 	public Message(Marker marker, String body, int who) {
 		this.marker = marker;
 		this.body = body;

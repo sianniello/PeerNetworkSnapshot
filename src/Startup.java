@@ -20,9 +20,17 @@ public class Startup {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
+	@SuppressWarnings("cast")
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		for(int i = 0; i <= 7; i++)
-			new Thread((Runnable) new Peer(10000 + i)).start();
+		if(args.length != 0)
+			for(int i = 0; i <= 7; i++) {
+				if(10000 + i == Integer.parseInt(args[0]))
+					new Thread((Runnable) new Peer(10000 + i, true)).start();
+				else
+					new Thread((Runnable) new Peer(10000 + i, false)).start();
+			}
+		else
+			for(int i = 0; i <= 7; i++)
+				new Thread((Runnable) new Peer(10000 + i, false)).start();
 	}
-
 }
