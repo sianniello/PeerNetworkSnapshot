@@ -26,6 +26,7 @@ public class Peer implements Runnable{
 	private HashSet<Integer> link;
 	private TreeMap<Marker, Integer> markerMap;
 	private boolean initiator;
+	private int nm;
 
 	@SuppressWarnings({ "javadoc", "unqualified-field-access", "resource" })
 	public Peer(int port, boolean initiator) throws IOException, ClassNotFoundException {
@@ -33,6 +34,7 @@ public class Peer implements Runnable{
 		state = new State("Start");
 		markerMap = new TreeMap<Marker, Integer>();
 		this.initiator = initiator;
+		this.nm = 0;
 	}
 
 	@SuppressWarnings({ "javadoc", "resource", "unchecked" })
@@ -79,7 +81,7 @@ public class Peer implements Runnable{
 			Executor executor = Executors.newFixedThreadPool(10);
 
 			while(true)
-				executor.execute(new ServerHandler(server.accept(), port, link, markerMap, state));
+				executor.execute(new ServerHandler(server.accept(), port, link, markerMap, state, nm));
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}

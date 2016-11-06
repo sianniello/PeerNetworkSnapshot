@@ -19,12 +19,12 @@ class ServerHandler implements Runnable {
 	private Socket client;
 	private ObjectInputStream in;
 	private State state;
-	private int port;
+	private int port, nm;
 	private HashSet<Integer> link;
 	private TreeMap<Marker, Integer> markerMap;
 
 	@SuppressWarnings("javadoc")
-	public ServerHandler(Socket client, int port, HashSet<Integer> link, TreeMap<Marker, Integer> markerMap, State state) throws IOException {
+	public ServerHandler(Socket client, int port, HashSet<Integer> link, TreeMap<Marker, Integer> markerMap, State state, int nm) throws IOException {
 		this.client = client;
 		this.port = port;
 		this.link = link;
@@ -37,7 +37,7 @@ class ServerHandler implements Runnable {
 	@SuppressWarnings("unqualified-field-access")
 	@Override
 	public void run() {
-		int nm = markerMap.size();
+
 		try {
 			Message message = (Message) in.readObject();	//il peer riceve il messaggio
 
@@ -55,23 +55,23 @@ class ServerHandler implements Runnable {
 						state.setState(message.getBody());
 						markerMap.put(message.getMarker(), sender);
 					}
+
 					System.out.println("Lato Server Peer " + port + "  aggiornamento markerMap: " + markerMap.toString() + " nm = " + nm);
 					message.setWho(port);
-					message.setMarker(new Marker(port, 1));
 					new Forwarder(link).sendAll(message, sender);	//invio marker su tutti gli altri canali di uscita
 				}
 				else if(markerMap.containsKey(message.getMarker()) && nm < link.size()) {
+					nm++;
 					System.out.println("Lato Server Peer " + port + "  marker già presente: " + markerMap.toString() + " nm = " + nm);
 					synchronized (this) {
 						state.setState(message.getBody());
 					}
 					message.setWho(port);
-					new Forwarder(link).sendAll(message, sender);
 				}
 
 				if(nm == link.size()) {
 					System.out.println("Lato Server Peer " + port + "  ha finito di registrare il suo stato");
-					new Forwarder().send(new Message(new Marker(port, 0), state.getState(), port), sender);
+					new Forwarder().send(new Message(new Marker(port, 0), state.getState(), port), message.getMarker().getProcessID());
 				}
 			}
 
