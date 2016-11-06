@@ -2,7 +2,7 @@ package peer;
 
 import java.io.Serializable;
 
-public class Marker implements Serializable{
+public class Marker implements Serializable, Comparable {
 
 	int processID;
 	int markerID;
@@ -47,6 +47,22 @@ public class Marker implements Serializable{
 		if (processID != other.processID)
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Object obj) {
+		if (this == obj)
+			return 1;
+		if (obj == null)
+			return 1;
+		if (getClass() != obj.getClass())
+			return 1;
+		Marker other = (Marker) obj;
+		if (markerID != other.markerID)
+			return 1;
+		if (processID != other.processID)
+			return 1;
+		return 0;
 	}
 	
 }

@@ -8,8 +8,14 @@ public class State {
 
 	private String state;
 
+	@SuppressWarnings("javadoc")
 	public State() {
-		state = "";
+		this.state = "";
+	}
+	
+	@SuppressWarnings("javadoc")
+	public State(String state) {
+		this.state = state;
 	}
 	
 	public String getState() {

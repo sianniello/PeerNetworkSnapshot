@@ -16,6 +16,7 @@ class ClientHandler implements Runnable {
 	private int markerId;
 	private Forwarder forwarder;
 	private boolean initiator;
+	private static boolean enable = true;
 
 	@SuppressWarnings("javadoc")
 	public ClientHandler(int port, HashSet<Integer> link, State state, boolean initiator) {
@@ -31,16 +32,16 @@ class ClientHandler implements Runnable {
 
 		Random random = new Random();
 
-		if(initiator && LocalDateTime.now().getMinute() % 2 == 0) {
-			startSnapshot();
-		}
-
 		for(;;)
 			try {
+
+				if(initiator && LocalDateTime.now().getMinute() % 2 == 0 && enable) 
+					startSnapshot();
+
 				new Forwarder(link).sendAll(new Message(new Marker(port, 0), "Hello! Timestamp: [" + new java.sql.Timestamp(System.currentTimeMillis()) + "]", port));
 
-				//il client invia messaggi in tempi random tra 5 e 60 secondi
-				Thread.sleep(random.nextInt(60000 - 5000) + 5000);
+				//il client invia messaggi in tempi random tra 5 e 30 secondi
+				Thread.sleep(random.nextInt(30001 - 5000) + 5000);
 
 			} catch (InterruptedException | IOException exception) {
 				exception.printStackTrace();
@@ -48,18 +49,19 @@ class ClientHandler implements Runnable {
 	}
 
 	public void startSnapshot() {
+		enable = false;
 		
-		System.out.println("Il peer " + port + "inizia lo snapshot!");
-		
+		System.out.println("Il peer " + port + " inizia lo snapshot!");
+
 		//lo stato è una risorsa condivisa tra lato client e server del peer
 		synchronized (this) {
 			state.setState(state.getState());		//il peer registra il suo stato
 		}
-		
+
 		try {
-			
+
 			forwarder.sendAll(new Message(new Marker(port, 1), "SNAPSHOT!", port));		//il peer invia in broadcast il marker
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

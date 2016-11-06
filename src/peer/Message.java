@@ -51,7 +51,7 @@ public class Message implements Serializable{
 	}
 
 	public String toString() {
-		return "Marker: " + marker.toString() + "\nBody: " + body + "\nWho: " + who + "\n";
+		return "\nBody: " + body + "\nWho: " + who + "\n";
 	}
 	
 }

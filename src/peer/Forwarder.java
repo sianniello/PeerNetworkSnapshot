@@ -17,7 +17,7 @@ public class Forwarder {
 	@SuppressWarnings("javadoc")
 	public Forwarder() {
 	}
-	
+
 	@SuppressWarnings({ "javadoc" })
 	public Forwarder(HashSet<Integer> link) {
 		this.link = link;
@@ -32,14 +32,12 @@ public class Forwarder {
 	 */
 	@SuppressWarnings({ "unqualified-field-access", "resource" })
 	public void send(Message message, int port) throws IOException {
-		for(Integer i : link)
-			if(i == port) {
-				Socket client = new Socket("localhost", i);
-				out = new ObjectOutputStream(client.getOutputStream());
-				out.writeObject(message);
-				client.close();
-			}
+		Socket client = new Socket("localhost", port);
+		out = new ObjectOutputStream(client.getOutputStream());
+		out.writeObject(message);
+		client.close();
 	}
+
 
 	/**
 	 * Broadcast su tutto il link.
