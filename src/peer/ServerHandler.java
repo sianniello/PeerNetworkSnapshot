@@ -41,27 +41,31 @@ class ServerHandler implements Runnable {
 		try {
 			Message message = (Message) in.readObject();	//il peer riceve il messaggio
 
-			if(message.getMarker().getMarkerID() == 0)	{	//il peer ha ricevuto un messaggio normale
+			if(message.getMarker().getMarkerID() == 0)		//il peer ha ricevuto un messaggio normale
 				System.out.println("\nLato Server Peer " + port + ", riceve un messaggio: " + message);
-				state.setState(message.getBody());
-			}
+
 			else if(message.getMarker().getMarkerID() == 1) {	//il peer ha ricevuto un marker di uno snapshot
 				int sender = message.getWho();
 				nm++;
 				System.out.println("\nLato Server Peer " + port + ", riceve un marker dal peer " + message.getWho());
 				System.out.println("Lato Server Peer " + port + " MarkerMap: " + markerMap.toString());
 
-				if(markerMap.isEmpty()) {			//se il peer non ha ancora registrato il proprio stato locale
+				if(markerMap.isEmpty()) {			//se il peer non ha ancora registrato il proprio stato locale (diventa rosso)
 					synchronized (this) {
 						state.setState(message.getBody());
 						markerMap.put(message.getMarker(), sender);
 					}
 					System.out.println("Lato Server Peer " + port + "  aggiornamento markerMap: " + markerMap.toString() + " nm = " + nm);
 					message.setWho(port);
-					new Forwarder(link).sendAll(message, sender);
+					message.setMarker(new Marker(port, 1));
+					new Forwarder(link).sendAll(message, sender);	//invio marker su tutti gli altri canali di uscita
 				}
 				else if(markerMap.containsKey(message.getMarker()) && nm < link.size()) {
 					System.out.println("Lato Server Peer " + port + "  marker già presente: " + markerMap.toString() + " nm = " + nm);
+					synchronized (this) {
+						state.setState(message.getBody());
+					}
+					message.setWho(port);
 					new Forwarder(link).sendAll(message, sender);
 				}
 
