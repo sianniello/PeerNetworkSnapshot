@@ -7,10 +7,12 @@ package peer;
 public class State {
 
 	private String state;
+	private int nm;
 
 	@SuppressWarnings("javadoc")
 	public State() {
 		this.state = "";
+		this.nm = 0;
 	}
 	
 	@SuppressWarnings("javadoc")
@@ -30,7 +32,15 @@ public class State {
 	public void setState(String state) {
 		this.state = this.state + state;
 	}
-	;
+	
+	public void incMarker() {
+		nm++;
+	}
+	
+	public int getMarker() {
+		return nm;
+	}
+	
 	public String toString() {
 		return "State: " + state + ".";
 	}

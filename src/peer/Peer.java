@@ -26,17 +26,22 @@ public class Peer implements Runnable{
 	private HashSet<Integer> link;
 	private TreeMap<Marker, Integer> markerMap;
 	private boolean initiator;
-	private int nm;
 
-	@SuppressWarnings({ "javadoc", "unqualified-field-access", "resource" })
+	/**
+	 * @param port porta del per
+	 * @param initiator booleano che specifica se quel peer è l'initiator dello snapshot
+	 */
+	@SuppressWarnings({ "javadoc", "unqualified-field-access" })
 	public Peer(int port, boolean initiator) throws IOException, ClassNotFoundException {
 		this.port = port;
 		state = new State("Start");
 		markerMap = new TreeMap<Marker, Integer>();
 		this.initiator = initiator;
-		this.nm = 0;
 	}
 
+	/**
+	 * il peer contatta il joinserver per farsi inviare la lista dei suoi vicini
+	 */
 	@SuppressWarnings({ "javadoc", "resource", "unchecked" })
 	public void join() throws IOException, ClassNotFoundException{
 		Socket client = null;
@@ -81,7 +86,7 @@ public class Peer implements Runnable{
 			Executor executor = Executors.newFixedThreadPool(10);
 
 			while(true)
-				executor.execute(new ServerHandler(server.accept(), port, link, markerMap, state, nm));
+				executor.execute(new ServerHandler(server.accept(), port, link, markerMap, state));
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
