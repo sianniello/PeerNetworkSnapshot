@@ -1,7 +1,10 @@
 package peer;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -10,7 +13,6 @@ class ClientHandler implements Runnable {
 	private int port;	// questa è la porta della parte Server del peer
 	private HashSet<Integer> link;
 	private State state;
-	private int markerId;
 	private Forwarder forwarder;
 	private boolean initiator;
 	private static boolean enable = true;	//abilita lo snapshot
@@ -36,7 +38,7 @@ class ClientHandler implements Runnable {
 				if(initiator && LocalDateTime.now().getMinute() % 2 == 0 && enable) 
 					startSnapshot();
 
-				new Forwarder(link).sendAll(new Message(new Marker(port, 0), "Hello! Timestamp: [" + new java.sql.Timestamp(System.currentTimeMillis()) + "] ", port));
+				new Forwarder(link).sendAll(new Message(new Marker(port, 0), "Hello! I'm " + port + " Timestamp: [" + new SimpleDateFormat("H:m:s.S").format(new Date()) + "] ", port));
 
 				//il client invia messaggi in tempi random tra 5 e 30 secondi
 				Thread.sleep(random.nextInt(30001 - 5000) + 5000);

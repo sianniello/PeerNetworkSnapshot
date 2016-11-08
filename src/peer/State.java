@@ -46,7 +46,7 @@ public class State {
 	}
 	
 	public String toString() {
-		return "State: " + state + ".";
+		return "State: " + state;
 	}
 
 }

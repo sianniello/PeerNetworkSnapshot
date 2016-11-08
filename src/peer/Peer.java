@@ -36,7 +36,7 @@ public class Peer implements Runnable{
 	@SuppressWarnings({ "javadoc", "unqualified-field-access" })
 	public Peer(int port, boolean initiator) throws IOException, ClassNotFoundException {
 		this.port = port;
-		state = new State("Start");
+		state = new State("Start ");
 		markerMap = new TreeMap<Marker, Integer>();
 		this.initiator = initiator;
 		if (initiator) hs = new HashMap<Integer, State>();
