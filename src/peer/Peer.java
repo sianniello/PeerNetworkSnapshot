@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.concurrent.Executor;
@@ -26,6 +27,7 @@ public class Peer implements Runnable{
 	private HashSet<Integer> link;
 	private TreeMap<Marker, Integer> markerMap;
 	private boolean initiator;
+	private HashMap<Integer, State> hs;
 
 	/**
 	 * @param port porta del per
@@ -37,6 +39,7 @@ public class Peer implements Runnable{
 		state = new State("Start");
 		markerMap = new TreeMap<Marker, Integer>();
 		this.initiator = initiator;
+		if (initiator) hs = new HashMap<Integer, State>();
 	}
 
 	/**
@@ -86,7 +89,7 @@ public class Peer implements Runnable{
 			Executor executor = Executors.newFixedThreadPool(10);
 
 			while(true)
-				executor.execute(new ServerHandler(server.accept(), port, link, markerMap, state));
+				executor.execute(new ServerHandler(server.accept(), port, link, markerMap, state, initiator, hs));
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}

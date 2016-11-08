@@ -12,7 +12,7 @@ public class State {
 	@SuppressWarnings("javadoc")
 	public State() {
 		this.state = "";
-		this.nm = 0;
+		this.nm = 0;	//numero di marker ricevuti dal peer durante lo snapshot
 	}
 	
 	@SuppressWarnings("javadoc")
@@ -33,7 +33,11 @@ public class State {
 		this.state = this.state + state;
 	}
 	
-	public void incMarker() {
+	/**
+	 * Questa funzione incrementa il numero di maker ricevuti dal peer durante lo snapshot
+	 *
+	 */
+	public void incNumMarker() {
 		nm++;
 	}
 	

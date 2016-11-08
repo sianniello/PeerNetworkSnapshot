@@ -1,10 +1,7 @@
 package peer;
 
 import java.io.IOException;
-import java.security.Timestamp;
-import java.sql.Time;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -16,7 +13,7 @@ class ClientHandler implements Runnable {
 	private int markerId;
 	private Forwarder forwarder;
 	private boolean initiator;
-	private static boolean enable = true;
+	private static boolean enable = true;	//abilita lo snapshot
 
 	@SuppressWarnings("javadoc")
 	public ClientHandler(int port, HashSet<Integer> link, State state, boolean initiator) {
@@ -24,7 +21,7 @@ class ClientHandler implements Runnable {
 		this.state = state;
 		this.link = link;
 		this.initiator = initiator;
-		forwarder = new Forwarder(link);
+		this.forwarder = new Forwarder(link);
 	}
 
 	@Override
