@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * TODO Put here a description of what this class does.
@@ -14,14 +16,14 @@ import java.util.HashMap;
  */
 public class PrintToFile {
 
-	private HashMap<Integer, State> hs;
+	private HashMap<Integer, String> hs;
 
 	/**
 	 * TODO Put here a description of what this constructor does.
 	 * @param hs 
 	 *
 	 */
-	public PrintToFile(HashMap<Integer, State> hs) {
+	public PrintToFile(HashMap<Integer, String> hs) {
 		this.hs = hs;
 	}
 
@@ -31,7 +33,6 @@ public class PrintToFile {
 
 		if(file.exists()) {
 			file.delete();
-			file = new File("snapshot.txt");
 		}
 
 		try {
@@ -43,7 +44,7 @@ public class PrintToFile {
 				bw.write("{" + index + ": " + hs.get(index).toString() + "}\n");
 			bw.close();
 		} catch (IOException exception) {
-			// TODO Auto-generated catch-block stub.
+			Logger.getLogger(PrintToFile.class.getName()).log(Level.SEVERE, null, exception);
 			exception.printStackTrace();
 		}
 	}

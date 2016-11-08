@@ -27,7 +27,7 @@ public class Peer implements Runnable{
 	private HashSet<Integer> link;
 	private TreeMap<Marker, Integer> markerMap;
 	private boolean initiator;
-	private HashMap<Integer, State> hs;
+	private HashMap<Integer, String> hs;
 
 	/**
 	 * @param port porta del per
@@ -39,7 +39,7 @@ public class Peer implements Runnable{
 		state = new State("Start ");
 		markerMap = new TreeMap<Marker, Integer>();
 		this.initiator = initiator;
-		if (initiator) hs = new HashMap<Integer, State>();
+		if (initiator) hs = new HashMap<Integer, String>();
 	}
 
 	/**

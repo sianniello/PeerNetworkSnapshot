@@ -24,10 +24,11 @@ class ServerHandler implements Runnable {
 	private HashSet<Integer> link;
 	private TreeMap<Marker, Integer> markerMap;
 	private boolean initiator;
-	private HashMap<Integer, State> hs;
+	private HashMap<Integer, String> hs;
 
 	@SuppressWarnings("javadoc")
-	public ServerHandler(Socket client, int port, HashSet<Integer> link, TreeMap<Marker, Integer> markerMap, State state, boolean initiator, HashMap<Integer, State> hs) throws IOException {
+	public ServerHandler(Socket client, int port, HashSet<Integer> link, TreeMap<Marker, Integer> markerMap, State state, 
+			boolean initiator, HashMap<Integer, String> hs) throws IOException {
 		this.port = port;
 		this.link = link;
 		this.markerMap = markerMap;
@@ -60,35 +61,45 @@ class ServerHandler implements Runnable {
 						markerMap.put(message.getMarker(), sender);
 						state.incNumMarker();
 					}
-					System.out.println("Lato Server Peer " + port + "  aggiornamento markerMap: " + markerMap.toString() + " nm = " + state.getMarker());
+					System.out.println("Lato Server Peer " + port + "  aggiornamento markerMap: " + 
+					markerMap.toString() + " nm = " + state.getMarker());
 					message.setWho(port);
 					new Forwarder(link).sendAll(message, sender);	//invio marker su tutti gli altri canali di uscita
 				}
-				else if(markerMap.containsKey(message.getMarker()) && state.getMarker() < link.size() && !markerMap.containsValue(sender) && !initiator) {
+				//il peer è consapevole dello snapshot in atto(la mappa contiene almeno un elemento) ma non ha ancora registrato lo stato dei vicini
+				else if(markerMap.containsKey(message.getMarker()) && state.getMarker() < link.size() 
+						&& !markerMap.containsValue(sender) && !initiator) {
 
 					synchronized (this) {
 						state.incNumMarker();
 					}
 
-					System.out.println("Lato Server Peer " + port + "  marker già presente: " + markerMap.toString() + " nm = " + state.getMarker());
+					System.out.println("Lato Server Peer " + port + "  marker già presente: " + 
+					markerMap.toString() + " nm = " + state.getMarker());
 				}
-				else if(initiator && !hs.containsKey(sender)) {
-					hs.put(sender, new State(message.getBody()));
+				//l'initiator raccoglie lo stato della rete nella struttura dati "hs"
+				else if(initiator && !hs.containsKey(sender) && !message.getBody().isEmpty()) {
+					hs.put(sender, message.getBody());
 					if(hs.keySet().containsAll(link)) {
-						hs.put(port, state);
+						hs.put(port, state.getState());
 						System.out.println("Initiator: SNAPSHOT FINITO!!" + hs.keySet().toString());
-						new PrintToFile(hs).print();
+
+						synchronized (this) {
+							new PrintToFile(hs).print();
+						}
+
 					}
 					else System.out.println("Initiator: " + hs.keySet().toString());
-
 				}
-
+				//il peer ha completato la registrazione dello stato
 				if(state.getMarker() == link.size() && !initiator) {
 					System.out.println("Lato Server Peer " + port + "  ha finito di registrare il suo stato");
 					message.setWho(port);
 					new Forwarder(link).sendAll(message);
-					new Forwarder().send(new Message(message.getMarker(), state.getState(), port), message.getMarker().getProcessID());
-					System.out.println("Lato Server Peer " + port + "  spedisce il suo stato all'Initiator: " + message.getMarker().getProcessID());
+					new Forwarder().send(new Message(message.getMarker(), state.getState(), port), 
+							message.getMarker().getProcessID());
+					System.out.println("Lato Server Peer " + port + "  spedisce il suo stato all'Initiator: " + 
+					message.getMarker().getProcessID());
 					state.incNumMarker();
 				}
 			}

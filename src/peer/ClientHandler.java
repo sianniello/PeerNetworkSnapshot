@@ -38,7 +38,7 @@ class ClientHandler implements Runnable {
 				if(initiator && LocalDateTime.now().getMinute() % 2 == 0 && enable) 
 					startSnapshot();
 
-				new Forwarder(link).sendAll(new Message(new Marker(port, 0), "Hello! I'm " + port + " Timestamp: [" + new SimpleDateFormat("H:m:s.S").format(new Date()) + "] ", port));
+				new Forwarder(link).sendAll(new Message(new Marker(port, 0), "Hello! I'm " + port + " Timestamp: [" + new SimpleDateFormat("H:mm:s.S").format(new Date()) + "] ", port));
 
 				//il client invia messaggi in tempi random tra 5 e 30 secondi
 				Thread.sleep(random.nextInt(30001 - 5000) + 5000);
