@@ -60,10 +60,7 @@ class ServerHandler implements Runnable {
 						markerMap.put(message.getMarker(), sender);
 						state.incNumMarker();
 					}
-
 					System.out.println("Lato Server Peer " + port + "  aggiornamento markerMap: " + markerMap.toString() + " nm = " + state.getMarker());
-					if(initiator) hs.put(sender, new State(message.getBody()));
-
 					message.setWho(port);
 					new Forwarder(link).sendAll(message, sender);	//invio marker su tutti gli altri canali di uscita
 				}
