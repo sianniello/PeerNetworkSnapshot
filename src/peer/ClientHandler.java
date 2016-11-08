@@ -32,10 +32,11 @@ class ClientHandler implements Runnable {
 		for(;;)
 			try {
 
+				//l'initiator inizia uno snapshot ogni 2' (circa)
 				if(initiator && LocalDateTime.now().getMinute() % 2 == 0 && enable) 
 					startSnapshot();
 
-				new Forwarder(link).sendAll(new Message(new Marker(port, 0), "Hello! Timestamp: [" + new java.sql.Timestamp(System.currentTimeMillis()) + "]", port));
+				new Forwarder(link).sendAll(new Message(new Marker(port, 0), "Hello! Timestamp: [" + new java.sql.Timestamp(System.currentTimeMillis()) + "] ", port));
 
 				//il client invia messaggi in tempi random tra 5 e 30 secondi
 				Thread.sleep(random.nextInt(30001 - 5000) + 5000);
@@ -57,7 +58,7 @@ class ClientHandler implements Runnable {
 
 		try {
 
-			forwarder.sendAll(new Message(new Marker(port, 1), "SNAPSHOT!", port));		//il peer invia in broadcast il marker
+			forwarder.sendAll(new Message(new Marker(port, 1), "", port));		//il peer invia in broadcast il marker
 
 		} catch (IOException e) {
 			e.printStackTrace();

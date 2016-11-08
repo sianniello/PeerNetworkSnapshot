@@ -48,13 +48,13 @@ class ServerHandler implements Runnable {
 				state.setState(message.getBody());
 			}
 
-			else if(message.getMarker().getMarkerID() == 1 && message.getWho() != port) {	//il peer ha ricevuto un marker di uno snapshot
+			else if(message.getMarker().getMarkerID() == 1 && message.getWho() != port ) {	//il peer ha ricevuto un marker di uno snapshot
 				int sender = message.getWho();
 
 				System.out.println("\nLato Server Peer " + port + ", riceve un marker dal peer " + message.getWho());
 				System.out.println("Lato Server Peer " + port + " MarkerMap: " + markerMap.toString());
 
-				if(markerMap.isEmpty()) {			//se il peer non ha ancora registrato il proprio stato locale (diventa rosso)
+				if(markerMap.isEmpty() && !initiator) {			//se il peer non ha ancora registrato il proprio stato locale (diventa rosso)
 
 					synchronized (this) {
 						markerMap.put(message.getMarker(), sender);
@@ -77,16 +77,21 @@ class ServerHandler implements Runnable {
 				}
 				else if(initiator && !hs.containsKey(sender)) {
 					hs.put(sender, new State(message.getBody()));
-					if(hs.keySet().containsAll(link))
+					if(hs.keySet().containsAll(link)) {
+						hs.put(port, state);
 						System.out.println("Initiator: SNAPSHOT FINITO!!" + hs.keySet().toString());
+						new PrintToFile(hs).print();
+					}
 					else System.out.println("Initiator: " + hs.keySet().toString());
 
 				}
 
 				if(state.getMarker() == link.size() && !initiator) {
 					System.out.println("Lato Server Peer " + port + "  ha finito di registrare il suo stato");
+					message.setWho(port);
 					new Forwarder(link).sendAll(message);
 					new Forwarder().send(new Message(message.getMarker(), state.getState(), port), message.getMarker().getProcessID());
+					System.out.println("Lato Server Peer " + port + "  spedisce il suo stato all'Initiator: " + message.getMarker().getProcessID());
 					state.incNumMarker();
 				}
 			}
